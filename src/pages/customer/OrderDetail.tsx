@@ -28,12 +28,16 @@ export default function OrderDetail() {
   if (isLoading) return <LoadingSpinner />
   if (!order) return <p className="text-center mt-10 text-gray-500">Order not found</p>
 
-  const handleDownloadInvoice = () => {
-    const token = localStorage.getItem('token')
-    window.open(
-      `${import.meta.env.VITE_API_URL}${ENDPOINTS.ORDERS}/${order.id}/invoice`,
-      '_blank',
-    )
+  const handleDownloadInvoice = async () => {
+    const res = await api.get(`${ENDPOINTS.ORDERS}/${order.id}/invoice`, {
+      responseType: 'blob',
+    })
+    const url = URL.createObjectURL(res.data)
+    const a = document.createElement('a')
+    a.href = url
+    a.download = `invoice-${order.id}.pdf`
+    a.click()
+    URL.revokeObjectURL(url)
   }
 
   return (
@@ -59,11 +63,11 @@ export default function OrderDetail() {
           <div key={item.id} className="flex items-center justify-between text-sm">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 bg-gray-100 rounded flex items-center justify-center text-gray-300 text-sm shrink-0">
-                {item.product.name[0]}
+                {item.product?.name?.[0] ?? '?'}
               </div>
               <div>
                 <Link to={`/products/${item.productId}`} className="text-gray-900 hover:text-indigo-600 font-medium">
-                  {item.product.name}
+                  {item.product?.name ?? `Product ${item.productId.slice(0, 8)}`}
                 </Link>
                 <p className="text-gray-500">Qty: {item.quantity} x {formatCurrency(item.priceAtTime)}</p>
               </div>

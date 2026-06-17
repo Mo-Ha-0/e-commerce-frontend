@@ -11,19 +11,14 @@ import Button from "../../components/ui/Button";
 import { formatCurrency } from "../../lib/utils";
 
 export default function Cart() {
-  const { data: items, isLoading } = useCart();
+  const { data, isLoading } = useCart();
   const updateItem = useUpdateCartItem();
   const removeItem = useRemoveCartItem();
 
   if (isLoading) return <LoadingSpinner />;
 
-  console.log(items);
-  const cartItems = items ?? [];
-
-  const total = cartItems.reduce(
-    (sum, item) => sum + parseFloat(item.product.price) * item.quantity,
-    0,
-  );
+  const cartItems = data?.items ?? [];
+  const total = data?.total ?? 0;
 
   if (cartItems.length === 0) {
     return (

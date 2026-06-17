@@ -8,13 +8,13 @@ import Button from '../../components/ui/Button'
 import { formatCurrency } from '../../lib/utils'
 
 export default function Checkout() {
-  const { data: items, isLoading: cartLoading } = useCart()
+  const { data, isLoading: cartLoading } = useCart()
   const checkout = useCheckout()
   const navigate = useNavigate()
 
   if (cartLoading) return <LoadingSpinner />
 
-  const cartItems = items ?? []
+  const cartItems = data?.items ?? []
 
   if (cartItems.length === 0) {
     return (
@@ -24,7 +24,7 @@ export default function Checkout() {
     )
   }
 
-  const subtotal = cartItems.reduce(
+  const subtotal = data?.total ?? cartItems.reduce(
     (sum, item) => sum + parseFloat(item.product.price) * item.quantity, 0,
   )
 

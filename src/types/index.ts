@@ -101,12 +101,12 @@ export interface UpdateCartItemDto {
 
 // ── Order ──
 export interface OrderItem {
-  id: string;
-  orderId: string;
-  productId: string;
-  quantity: number;
-  priceAtTime: string;
-  product: Product;
+  id: string
+  orderId: string
+  productId: string
+  quantity: number
+  priceAtTime: string
+  product?: Product
 }
 
 export interface Order {
@@ -193,6 +193,20 @@ export interface UpdateStockDto {
 export interface RestockDto {
   quantity: number;
   reason?: string;
+}
+
+// ── Cart Response (backend returns { items, subTotal, total }) ──
+export interface CartResponse {
+  items: CartItem[]
+  subTotal: number
+  total: number
+  globalDiscount?: unknown
+}
+
+// ── Wallet Response ──
+export interface WalletResponse {
+  userId: string
+  balance: string
 }
 
 // ── Pagination ──

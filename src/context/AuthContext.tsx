@@ -29,7 +29,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     api
       .get(ENDPOINTS.AUTH.ME)
-      .then((res) => setUser(res.data))
+      .then((res) => {
+        // console.log(res);
+        setUser(res.data);
+      })
       .catch(() => {
         localStorage.removeItem("token");
         setToken(null);

@@ -1,14 +1,14 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import api from '../api/axios'
 import { ENDPOINTS } from '../api/endpoints'
-import type { CartItem, AddCartItemDto, UpdateCartItemDto } from '../types'
+import type { CartResponse, AddCartItemDto, UpdateCartItemDto } from '../types'
 import { toast } from 'react-toastify'
 
 export function useCart() {
   return useQuery({
     queryKey: ['cart'],
     queryFn: () =>
-      api.get<CartItem[]>(ENDPOINTS.CART).then((res) => res.data),
+      api.get<CartResponse>(ENDPOINTS.CART).then((res) => res.data),
   })
 }
 
