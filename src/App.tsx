@@ -10,6 +10,11 @@ import Products from './pages/public/Products'
 import ProductDetail from './pages/public/ProductDetail'
 import Login from './pages/auth/Login'
 import Register from './pages/auth/Register'
+import Cart from './pages/customer/Cart'
+import Checkout from './pages/customer/Checkout'
+import Orders from './pages/customer/Orders'
+import OrderDetail from './pages/customer/OrderDetail'
+import Wallet from './pages/customer/Wallet'
 
 export default function App() {
   return (
@@ -25,7 +30,11 @@ export default function App() {
 
           {/* Customer routes */}
           <Route element={<ProtectedRoute />}>
-            {/* cart, checkout, orders, wallet will go here */}
+            <Route path="/cart" element={<Cart />} />
+            <Route path="/checkout" element={<Checkout />} />
+            <Route path="/orders" element={<Orders />} />
+            <Route path="/orders/:id" element={<OrderDetail />} />
+            <Route path="/wallet" element={<Wallet />} />
           </Route>
         </Route>
 
