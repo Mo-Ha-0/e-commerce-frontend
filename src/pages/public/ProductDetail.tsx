@@ -1,32 +1,36 @@
-import { useState } from 'react'
-import { useParams, Link } from 'react-router-dom'
-import { FiArrowLeft, FiShoppingCart, FiMinus, FiPlus } from 'react-icons/fi'
-import { useProduct } from '../../hooks/useProducts'
-import { useAddCartItem } from '../../hooks/useCart'
-import { useAuth } from '../../hooks/useAuth'
-import LoadingSpinner from '../../components/ui/LoadingSpinner'
-import Badge from '../../components/ui/Badge'
-import Button from '../../components/ui/Button'
-import { formatCurrency } from '../../lib/utils'
+import { useState } from "react";
+import { useParams, Link } from "react-router-dom";
+import { FiArrowLeft, FiShoppingCart, FiMinus, FiPlus } from "react-icons/fi";
+import { useProduct } from "../../hooks/useProducts";
+import { useAddCartItem } from "../../hooks/useCart";
+import { useAuth } from "../../hooks/useAuth";
+import LoadingSpinner from "../../components/ui/LoadingSpinner";
+import Badge from "../../components/ui/Badge";
+import Button from "../../components/ui/Button";
+import { formatCurrency } from "../../lib/utils";
 
 export default function ProductDetail() {
-  const { id } = useParams<{ id: string }>()
-  const { data: product, isLoading } = useProduct(id!)
-  const addItem = useAddCartItem()
-  const { user } = useAuth()
-  const [quantity, setQuantity] = useState(1)
+  const { id } = useParams<{ id: string }>();
+  const { data: product, isLoading } = useProduct(id!);
+  const addItem = useAddCartItem();
+  const { user } = useAuth();
+  const [quantity, setQuantity] = useState(1);
 
-  if (isLoading) return <LoadingSpinner />
-  if (!product) return <p className="text-center mt-10 text-gray-500">Product not found</p>
+  if (isLoading) return <LoadingSpinner />;
+  if (!product)
+    return <p className="text-center mt-10 text-gray-500">Product not found</p>;
 
   const handleAddToCart = () => {
-    if (!user) return
-    addItem.mutate({ productId: product.id, quantity })
-  }
+    if (!user) return;
+    addItem.mutate({ productId: product.id, quantity });
+  };
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      <Link to="/products" className="inline-flex items-center gap-2 text-gray-600 hover:text-indigo-600 mb-6">
+      <Link
+        to="/products"
+        className="inline-flex items-center gap-2 text-gray-600 hover:text-indigo-600 mb-6"
+      >
         <FiArrowLeft /> Back to Products
       </Link>
 
@@ -37,16 +41,29 @@ export default function ProductDetail() {
 
         <div>
           <Badge
-            label={product.stock > 0 ? 'In Stock' : 'Out of Stock'}
-            color={product.stock > 0 ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}
+            label={product.stock > 0 ? "In Stock" : "Out of Stock"}
+            color={
+              product.stock > 0
+                ? "bg-green-100 text-green-800"
+                : "bg-red-100 text-red-800"
+            }
           />
-          <h1 className="text-3xl font-bold text-gray-900 mt-3">{product.name}</h1>
-          <p className="text-3xl font-bold text-indigo-600 mt-4">{formatCurrency(product.price)}</p>
-          <p className="text-gray-600 mt-4 leading-relaxed">{product.description}</p>
+          <h1 className="text-3xl font-bold text-gray-900 mt-3">
+            {product.name}
+          </h1>
+          <p className="text-3xl font-bold text-indigo-600 mt-4">
+            Price: {formatCurrency(product.price)}
+          </p>
+          <p className="text-1xl text-gray-900 mt-4">Stock: {product.stock}</p>
+          <p className="text-gray-600 mt-2 leading-relaxed">
+            {product.description}
+          </p>
 
           <div className="mt-8 space-y-4">
             <div className="flex items-center gap-4">
-              <span className="text-sm font-medium text-gray-700">Quantity:</span>
+              <span className="text-sm font-medium text-gray-700">
+                Quantity:
+              </span>
               <div className="flex items-center border border-gray-300 rounded-lg">
                 <button
                   onClick={() => setQuantity(Math.max(1, quantity - 1))}
@@ -58,7 +75,9 @@ export default function ProductDetail() {
                   {quantity}
                 </span>
                 <button
-                  onClick={() => setQuantity(Math.min(product.stock, quantity + 1))}
+                  onClick={() =>
+                    setQuantity(Math.min(product.stock, quantity + 1))
+                  }
                   className="px-3 py-2 hover:bg-gray-50 transition-colors"
                 >
                   <FiPlus size={16} />
@@ -87,5 +106,5 @@ export default function ProductDetail() {
         </div>
       </div>
     </div>
-  )
+  );
 }
