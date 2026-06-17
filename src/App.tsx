@@ -1,0 +1,31 @@
+import { Routes, Route } from 'react-router-dom'
+import { ToastContainer } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
+
+import AppLayout from './components/layout/AppLayout'
+import ProtectedRoute from './components/layout/ProtectedRoute'
+
+import Home from './pages/public/Home'
+
+export default function App() {
+  return (
+    <>
+      <ToastContainer position="top-right" autoClose={3000} />
+      <Routes>
+        <Route element={<AppLayout />}>
+          <Route path="/" element={<Home />} />
+
+          {/* Customer routes */}
+          <Route element={<ProtectedRoute />}>
+            {/* cart, checkout, orders, wallet will go here */}
+          </Route>
+        </Route>
+
+        {/* Admin routes */}
+        <Route element={<ProtectedRoute requiredRole="admin" />}>
+          {/* admin layout + pages will go here */}
+        </Route>
+      </Routes>
+    </>
+  )
+}
