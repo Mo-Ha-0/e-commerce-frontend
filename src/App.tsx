@@ -6,6 +6,8 @@ import AppLayout from './components/layout/AppLayout'
 import ProtectedRoute from './components/layout/ProtectedRoute'
 
 import Home from './pages/public/Home'
+import Products from './pages/public/Products'
+import ProductDetail from './pages/public/ProductDetail'
 
 export default function App() {
   return (
@@ -14,6 +16,8 @@ export default function App() {
       <Routes>
         <Route element={<AppLayout />}>
           <Route path="/" element={<Home />} />
+          <Route path="/products" element={<Products />} />
+          <Route path="/products/:id" element={<ProductDetail />} />
 
           {/* Customer routes */}
           <Route element={<ProtectedRoute />}>
