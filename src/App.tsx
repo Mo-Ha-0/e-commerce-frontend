@@ -15,6 +15,13 @@ import Checkout from './pages/customer/Checkout'
 import Orders from './pages/customer/Orders'
 import OrderDetail from './pages/customer/OrderDetail'
 import Wallet from './pages/customer/Wallet'
+import AdminLayout from './components/layout/AdminLayout'
+import AdminDashboard from './pages/admin/AdminDashboard'
+import AdminProducts from './pages/admin/AdminProducts'
+import AdminOrders from './pages/admin/AdminOrders'
+import AdminInventory from './pages/admin/AdminInventory'
+import AdminDiscounts from './pages/admin/AdminDiscounts'
+import AdminWallet from './pages/admin/AdminWallet'
 
 export default function App() {
   return (
@@ -40,7 +47,14 @@ export default function App() {
 
         {/* Admin routes */}
         <Route element={<ProtectedRoute requiredRole="admin" />}>
-          {/* admin layout + pages will go here */}
+          <Route element={<AdminLayout />}>
+            <Route path="/admin" element={<AdminDashboard />} />
+            <Route path="/admin/products" element={<AdminProducts />} />
+            <Route path="/admin/orders" element={<AdminOrders />} />
+            <Route path="/admin/inventory" element={<AdminInventory />} />
+            <Route path="/admin/discounts" element={<AdminDiscounts />} />
+            <Route path="/admin/wallet" element={<AdminWallet />} />
+          </Route>
         </Route>
       </Routes>
     </>
