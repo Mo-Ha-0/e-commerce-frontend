@@ -5,8 +5,33 @@ import type {
     DepositDto,
     WalletTransaction,
     PaginatedResponse,
+    User,
 } from '../types';
 import { toast } from 'react-toastify';
+
+interface ListResponse<T> {
+    data: T[];
+    meta: { page: number; limit: number; total: number; totalPages: number };
+}
+
+export function useUsersList(page = 1, limit = 20, search?: string) {
+    return useQuery({
+        queryKey: ['admin', 'users', page, limit, search],
+        queryFn: async () => {
+            const params: Record<string, string | number> = { page, limit };
+            if (search) params.search = search;
+            const res = await api.get<ListResponse<User>>(ENDPOINTS.USERS, {
+                params,
+            });
+            return {
+                items: res.data.data,
+                page: res.data.meta.page,
+                limit: res.data.meta.limit,
+                total: res.data.meta.total,
+            } satisfies PaginatedResponse<User>;
+        },
+    });
+}
 
 export function useUserBalance(userId: string) {
     return useQuery({
@@ -19,15 +44,26 @@ export function useUserBalance(userId: string) {
     });
 }
 
+interface WalletTxResponse {
+    data: WalletTransaction[];
+    meta: { page: number; limit: number; total: number; totalPages: number };
+}
+
 export function useUserTransactions(userId: string, page = 1, limit = 20) {
     return useQuery({
         queryKey: ['admin', 'wallet', userId, 'transactions', page, limit],
-        queryFn: () =>
-            api
-                .get<
-                    PaginatedResponse<WalletTransaction>
-                >(`${ENDPOINTS.WALLET}/admin/users/${userId}/transactions`, { params: { page, limit } })
-                .then((res) => res.data),
+        queryFn: async () => {
+            const res = await api.get<WalletTxResponse>(
+                `${ENDPOINTS.WALLET}/admin/users/${userId}/transactions`,
+                { params: { page, limit } },
+            );
+            return {
+                items: res.data.data,
+                page: res.data.meta.page,
+                limit: res.data.meta.limit,
+                total: res.data.meta.total,
+            } satisfies PaginatedResponse<WalletTransaction>;
+        },
         enabled: !!userId,
     });
 }

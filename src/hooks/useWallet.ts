@@ -31,7 +31,7 @@ export function useWalletTransactions(page = 1, limit = 20) {
                 },
             );
             return {
-                data: res.data.data,
+                items: res.data.data,
                 page: res.data.meta.page,
                 limit: res.data.meta.limit,
                 total: res.data.meta.total,

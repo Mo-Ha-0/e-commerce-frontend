@@ -30,9 +30,9 @@ export enum WalletTransactionType {
 
 // ── Auth ──
 export interface JwtUser {
-    userId: string;
-    email: string;
-    role: UserRole;
+  id: string
+  email: string
+  role: UserRole
 }
 
 export interface LoginDto {
@@ -56,14 +56,16 @@ export interface User {
 
 // ── Product ──
 export interface Product {
-    id: string;
-    name: string;
-    description: string;
-    price: string;
-    stock: number;
-    createdAt: string;
-    updatedAt: string;
-    version: number;
+  id: string
+  name: string
+  description: string
+  price: string
+  stock: number
+  createdAt: string
+  updatedAt: string
+  version: number
+  originalPrice?: number
+  discount?: { id: string; name: string; type: DiscountType; value: number } | null
 }
 
 export interface CreateProductDto {
@@ -210,9 +212,10 @@ export interface WalletResponse {
 }
 
 // ── Pagination ──
+// Backend returns { items, total, page, limit }
 export interface PaginatedResponse<T> {
-    items: T[];
-    total: number;
-    page: number;
-    limit: number;
+  items: T[]
+  total: number
+  page: number
+  limit: number
 }

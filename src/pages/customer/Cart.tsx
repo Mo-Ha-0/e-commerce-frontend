@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { FiTrash2, FiMinus, FiPlus, FiShoppingBag } from 'react-icons/fi';
 import {
@@ -14,6 +15,7 @@ export default function Cart() {
     const { data, isLoading } = useCart();
     const updateItem = useUpdateCartItem();
     const removeItem = useRemoveCartItem();
+    const [editingQty, setEditingQty] = useState<Record<string, string>>({});
 
     if (isLoading) return <LoadingSpinner />;
 
@@ -66,31 +68,72 @@ export default function Cart() {
 
                         <div className="flex items-center border border-gray-300 rounded-lg">
                             <button
-                                onClick={() =>
+                                type="button"
+                                onClick={() => {
+                                    const q = Math.max(1, item.quantity - 1);
+                                    setEditingQty((prev) => {
+                                        const next = { ...prev };
+                                        delete next[item.id];
+                                        return next;
+                                    });
                                     updateItem.mutate({
                                         productId: item.productId,
-                                        dto: {
-                                            quantity: Math.max(
-                                                1,
-                                                item.quantity - 1,
-                                            ),
-                                        },
-                                    })
-                                }
+                                        dto: { quantity: q },
+                                    });
+                                }}
                                 className="px-2 py-1.5 hover:bg-gray-50"
                             >
                                 <FiMinus size={14} />
                             </button>
-                            <span className="px-3 py-1.5 text-sm font-medium border-x border-gray-300 min-w-[36px] text-center">
-                                {item.quantity}
-                            </span>
+                            <input
+                                type="number"
+                                min={1}
+                                value={
+                                    editingQty[item.id] ?? String(item.quantity)
+                                }
+                                onChange={(e) =>
+                                    setEditingQty((prev) => ({
+                                        ...prev,
+                                        [item.id]: e.target.value,
+                                    }))
+                                }
+                                onBlur={() => {
+                                    const raw = editingQty[item.id];
+                                    if (raw === undefined) return;
+                                    const val = parseInt(raw, 10);
+                                    if (isNaN(val) || val < 1) {
+                                        updateItem.mutate({
+                                            productId: item.productId,
+                                            dto: { quantity: 1 },
+                                        });
+                                    } else {
+                                        updateItem.mutate({
+                                            productId: item.productId,
+                                            dto: { quantity: val },
+                                        });
+                                    }
+                                    setEditingQty((prev) => {
+                                        const next = { ...prev };
+                                        delete next[item.id];
+                                        return next;
+                                    });
+                                }}
+                                className="w-12 px-2 py-1.5 text-sm font-medium text-center border-x border-gray-300 outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                            />
                             <button
-                                onClick={() =>
+                                type="button"
+                                onClick={() => {
+                                    const q = item.quantity + 1;
+                                    setEditingQty((prev) => {
+                                        const next = { ...prev };
+                                        delete next[item.id];
+                                        return next;
+                                    });
                                     updateItem.mutate({
                                         productId: item.productId,
-                                        dto: { quantity: item.quantity + 1 },
-                                    })
-                                }
+                                        dto: { quantity: q },
+                                    });
+                                }}
                                 className="px-2 py-1.5 hover:bg-gray-50"
                             >
                                 <FiPlus size={14} />

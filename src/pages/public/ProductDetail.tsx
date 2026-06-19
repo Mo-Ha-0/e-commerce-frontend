@@ -72,6 +72,7 @@ export default function ProductDetail() {
                             </span>
                             <div className="flex items-center border border-gray-300 rounded-lg">
                                 <button
+                                    type="button"
                                     onClick={() =>
                                         setQuantity(Math.max(1, quantity - 1))
                                     }
@@ -79,10 +80,25 @@ export default function ProductDetail() {
                                 >
                                     <FiMinus size={16} />
                                 </button>
-                                <span className="px-4 py-2 text-sm font-medium border-x border-gray-300 min-w-[48px] text-center">
-                                    {quantity}
-                                </span>
+                                <input
+                                    type="number"
+                                    min={1}
+                                    max={product.stock}
+                                    value={quantity}
+                                    onChange={(e) => {
+                                        const val = parseInt(e.target.value, 10);
+                                        if (isNaN(val) || val < 1) {
+                                            setQuantity(1);
+                                        } else if (val > product.stock) {
+                                            setQuantity(product.stock);
+                                        } else {
+                                            setQuantity(val);
+                                        }
+                                    }}
+                                    className="w-16 px-2 py-2 text-sm font-medium text-center border-x border-gray-300 outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                                />
                                 <button
+                                    type="button"
                                     onClick={() =>
                                         setQuantity(
                                             Math.min(

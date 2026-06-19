@@ -34,7 +34,7 @@ type DiscountForm = z.infer<typeof discountSchema>;
 
 export default function AdminDiscounts() {
     const { data: discounts, isLoading } = useDiscounts();
-    const { data: productsData } = useProducts(1, 200);
+    const { data: productsData } = useProducts(1, 1000);
     const createDiscount = useCreateDiscount();
     const updateDiscount = useUpdateDiscount();
     const deleteDiscount = useDeleteDiscount();

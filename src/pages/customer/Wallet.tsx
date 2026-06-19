@@ -34,14 +34,14 @@ export default function Wallet() {
 
             {txLoading ? (
                 <LoadingSpinner />
-            ) : !txData || txData.data.length === 0 ? (
+            ) : !txData || txData.items.length === 0 ? (
                 <p className="text-gray-500 text-center py-8">
                     No transactions yet
                 </p>
             ) : (
                 <>
                     <div className="space-y-3">
-                        {txData.data.map((tx: WalletTransaction) => (
+                        {txData.items.map((tx: WalletTransaction) => (
                             <div
                                 key={tx.id}
                                 className="bg-white border border-gray-200 rounded-xl p-4 flex items-center justify-between"

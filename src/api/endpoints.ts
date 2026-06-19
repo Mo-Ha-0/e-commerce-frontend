@@ -10,4 +10,5 @@ export const ENDPOINTS = {
     WALLET: '/wallet',
     DISCOUNTS: '/discounts',
     INVENTORY: '/inventory',
+    USERS: '/users',
 } as const;

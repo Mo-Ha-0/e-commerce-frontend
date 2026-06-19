@@ -1,5 +1,4 @@
 import { useState, useRef, useEffect } from 'react';
-import { useProducts } from '../../hooks/useProducts';
 import {
     useLowStock,
     useInventoryLogs,
@@ -72,11 +71,7 @@ function EditableStock({
 }
 
 export default function AdminInventory() {
-    const { data: productsData, isLoading: productsLoading } = useProducts(
-        1,
-        100,
-    );
-    const { data: lowStock } = useLowStock(5);
+    const { data: lowStock, isLoading } = useLowStock(5);
     const { data: logs, isLoading: logsLoading } = useInventoryLogs();
     const updateStock = useUpdateStock();
     const restock = useRestock();
@@ -86,10 +81,7 @@ export default function AdminInventory() {
         product: Product | null;
     }>({ open: false, product: null });
 
-    const products = productsData?.data ?? [];
-    const lowStockIds = new Set(
-        (Array.isArray(lowStock) ? lowStock : []).map((p: any) => p.id),
-    );
+    const lowStockProducts: Product[] = Array.isArray(lowStock) ? lowStock : [];
 
     const handleInlineSave = (productId: string, stock: number) => {
         updateStock.mutate({ productId, dto: { stock } });
@@ -98,14 +90,22 @@ export default function AdminInventory() {
     return (
         <div className="space-y-8">
             <div>
-                <h1 className="text-2xl font-bold text-gray-900 mb-6">
-                    Inventory
-                </h1>
+                <div className="flex items-center gap-3 mb-6">
+                    <h1 className="text-2xl font-bold text-gray-900">
+                        Inventory
+                    </h1>
+                    {!isLoading && lowStockProducts.length > 0 && (
+                        <Badge
+                            label={`${lowStockProducts.length} low`}
+                            color="bg-red-100 text-red-800"
+                        />
+                    )}
+                </div>
 
-                {productsLoading ? (
+                {isLoading ? (
                     <LoadingSpinner />
-                ) : products.length === 0 ? (
-                    <EmptyState message="No products" />
+                ) : lowStockProducts.length === 0 ? (
+                    <EmptyState message="All products are well stocked" />
                 ) : (
                     <Table
                         columns={[
@@ -118,19 +118,18 @@ export default function AdminInventory() {
                                 key: 'stock',
                                 header: 'Stock (click to edit)',
                                 render: (p: Product) => (
-                                    <span
-                                        className={
-                                            lowStockIds.has(p.id)
-                                                ? 'text-red-600 font-bold'
-                                                : ''
-                                        }
-                                    >
+                                    <span className="text-red-600 font-bold">
                                         <EditableStock
                                             product={p}
                                             onSave={handleInlineSave}
                                         />
                                     </span>
                                 ),
+                            },
+                            {
+                                key: 'price',
+                                header: 'Price',
+                                render: (p: Product) => `$${p.price}`,
                             },
                             {
                                 key: 'actions',
@@ -153,33 +152,8 @@ export default function AdminInventory() {
                                 ),
                             },
                         ]}
-                        data={products}
+                        data={lowStockProducts}
                     />
-                )}
-            </div>
-
-            <div>
-                <h2 className="text-lg font-semibold text-gray-900 mb-4">
-                    Low Stock Alerts
-                </h2>
-                {!lowStock ? (
-                    <LoadingSpinner />
-                ) : (Array.isArray(lowStock) ? lowStock : []).length === 0 ? (
-                    <p className="text-gray-500 text-sm">
-                        All products well stocked
-                    </p>
-                ) : (
-                    <div className="flex flex-wrap gap-2">
-                        {(Array.isArray(lowStock) ? lowStock : []).map(
-                            (p: any) => (
-                                <Badge
-                                    key={p.id}
-                                    label={`${p.name}: ${p.stock} left`}
-                                    color="bg-red-100 text-red-800"
-                                />
-                            ),
-                        )}
-                    </div>
                 )}
             </div>
 
